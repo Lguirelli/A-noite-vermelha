@@ -1,0 +1,36 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-anoite}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-anoite}
+      POSTGRES_DB: ${POSTGRES_DB:-anoite}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-anoite}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      APP_NAME: ${APP_NAME:-A Noite Vermelha}
+      APP_SECRET_KEY: ${APP_SECRET_KEY:-dev-secret}
+      APP_PORT: ${APP_PORT:-8013}
+      DATABASE_URL: postgresql+psycopg2://${POSTGRES_USER:-anoite}:${POSTGRES_PASSWORD:-anoite}@db:5432/${POSTGRES_DB:-anoite}
+      DEV_USER_NAME: ${DEV_USER_NAME:-Mestre}
+      DEV_USER_ROLE: ${DEV_USER_ROLE:-gm}
+    ports:
+      - "${APP_PORT:-8013}:${APP_PORT:-8013}"
+    volumes:
+      - ./assets:/app/assets
+
+volumes:
+  db_data:

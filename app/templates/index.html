@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>A Noite Vermelha</title>
+  <link rel="stylesheet" href="/static/css/app.css">
+</head>
+<body>
+  <main class="landing">
+    <p class="eyebrow">VTT • PROTÓTIPO</p>
+    <h1>A Noite Vermelha</h1>
+    <p>Bem-vindo, {{ user.name }}.</p>
+    {% if campaign %}
+      <a class="button" href="/table/{{ campaign.id }}">Entrar em {{ campaign.name }}</a>
+    {% else %}
+      <p>Nenhuma campanha criada. Rode <code>python seed.py</code> para carregar o cenário inicial.</p>
+    {% endif %}
+  </main>
+</body>
+</html>
