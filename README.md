@@ -102,3 +102,25 @@ app/
 O desenho arquitetural toma como referência o SimpleVTT de Matthew Kolakowski, distribuído sob licença MIT. Nenhuma parte substancial do código-fonte do SimpleVTT foi copiada neste esqueleto.
 
 Veja `NOTICE.md`.
+
+## Deploy
+
+A interface do jogo é sempre a rota `/`. A documentação interativa da API fica em `/docs`.
+
+- **Docker/Render/Railway:** inicia com `uvicorn app.main:app`.
+- **Vercel:** o arquivo raiz `main.py` expõe o FastAPI para detecção automática; não é necessário redirecionar `/` para `/docs`.
+- O mundo inicial é criado automaticamente no primeiro boot; `python seed.py` continua disponível para desenvolvimento local.
+
+> Para produção persistente, configure `DATABASE_URL` com PostgreSQL. SQLite é indicado apenas para desenvolvimento/protótipo.
+
+## Direção narrativa: plot points fixos e móveis
+
+O protótipo agora inclui um painel exclusivo do Mestre em `/narrative/{campaign_id}/gm`.
+
+- **Fixos** sustentam a espinha dorsal da campanha e não podem ser marcados como perdidos.
+- **Móveis** podem ser ativados em diferentes locais e também podem ser **perdidos definitivamente**.
+- Um móvel perdido não é automaticamente reapresentado em outro NPC ou local.
+- Pré-requisitos só consideram plot points **concluídos**; perder uma pista opcional pode fechar caminhos secundários sem impedir os pontos fixos essenciais.
+- O histórico narrativo registra ativações, conclusões e perdas.
+
+A mesa do Mestre exibe um botão **Direção narrativa** na barra lateral.

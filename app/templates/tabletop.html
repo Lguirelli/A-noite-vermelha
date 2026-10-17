@@ -12,7 +12,7 @@
       {% if scene %}<div class="scene-title">{{ scene.name }}</div>{% else %}<div class="empty">O Mestre ainda não ativou uma cena.</div>{% endif %}
     </section>
     <aside class="sidebar">
-      <h2>Presença</h2>
+      <h2>Presença</h2>{% if is_gm %}<p><a class="button" href="/narrative/{{ campaign.id }}/gm">Direção narrativa</a></p>{% endif %}
       <p>Camadas privadas, pistas e mensagens aparecerão aqui.</p>
       <div id="events"></div>
     </aside>

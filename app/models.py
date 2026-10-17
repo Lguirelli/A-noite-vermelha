@@ -97,3 +97,33 @@ class Secret(Base):
     target_character_id: Mapped[Optional[int]] = mapped_column(ForeignKey("characters.id", ondelete="CASCADE"), nullable=True)
     is_revealed: Mapped[bool] = mapped_column(Boolean, default=False)
     revealed_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
+
+class PlotPoint(Base):
+    __tablename__ = "plot_points"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    campaign_id: Mapped[int] = mapped_column(ForeignKey("campaigns.id", ondelete="CASCADE"))
+    code: Mapped[str] = mapped_column(String(80))
+    title: Mapped[str] = mapped_column(String(180))
+    description: Mapped[str] = mapped_column(Text, default="")
+    act: Mapped[int] = mapped_column(Integer, default=1)
+    point_type: Mapped[str] = mapped_column(String(20), default="mobile")  # fixed | mobile
+    status: Mapped[str] = mapped_column(String(20), default="available")  # locked | available | active | completed | lost
+    gm_notes: Mapped[str] = mapped_column(Text, default="")
+    player_reveal: Mapped[str] = mapped_column(Text, default="")
+    possible_locations: Mapped[list] = mapped_column(JSON, default=list)
+    prerequisites: Mapped[list] = mapped_column(JSON, default=list)
+    consequences: Mapped[dict] = mapped_column(JSON, default=dict)
+    can_be_lost: Mapped[bool] = mapped_column(Boolean, default=True)
+    sort_order: Mapped[int] = mapped_column(Integer, default=0)
+    resolved_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
+
+
+class NarrativeLog(Base):
+    __tablename__ = "narrative_log"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    campaign_id: Mapped[int] = mapped_column(ForeignKey("campaigns.id", ondelete="CASCADE"))
+    plot_point_id: Mapped[Optional[int]] = mapped_column(ForeignKey("plot_points.id", ondelete="SET NULL"), nullable=True)
+    event_type: Mapped[str] = mapped_column(String(40))
+    text: Mapped[str] = mapped_column(Text, default="")
+    is_player_visible: Mapped[bool] = mapped_column(Boolean, default=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())

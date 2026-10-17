@@ -15,3 +15,25 @@ h1 { font-size:clamp(3rem,8vw,7rem); margin:.25rem 0 1.5rem; font-weight:500; }
 .sidebar p { color:var(--muted); line-height:1.5; }
 .event { border-left:3px solid var(--blood); padding:10px 12px; margin:12px 0; background:#201313; }
 .empty { position:absolute; inset:0; display:grid; place-items:center; color:var(--muted); }
+.topbar a { color:var(--ink); text-decoration:none; }
+.muted,.small { color:var(--muted); }
+.narrative-shell { display:grid; grid-template-columns:minmax(0,1fr) 320px; gap:24px; padding:28px; }
+.narrative-title { font-size:3rem; margin:.2rem 0; }
+.act-block { margin:28px 0 38px; }
+.act-block h2 { border-bottom:1px solid var(--line); padding-bottom:8px; }
+.plot-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(270px,1fr)); gap:14px; }
+.plot-card { border:1px solid var(--line); background:var(--panel); padding:16px; border-radius:4px; }
+.plot-card.fixed { border-top:3px solid #b89b67; }
+.plot-card.mobile { border-top:3px solid var(--blood); }
+.plot-card.status-lost { opacity:.45; filter:grayscale(.8); }
+.plot-card.status-completed { opacity:.72; }
+.plot-card.status-locked { opacity:.5; }
+.plot-meta { display:flex; justify-content:space-between; font-size:.68rem; letter-spacing:.12em; color:var(--muted); }
+.plot-card h3 { margin:.7rem 0; }
+.plot-actions { display:flex; flex-wrap:wrap; gap:7px; margin-top:14px; }
+.plot-actions button { background:#1d1717; color:var(--ink); border:1px solid #3b3030; padding:7px 10px; cursor:pointer; }
+.plot-actions .danger { border-color:#6d2222; color:#e5a7a7; }
+.narrative-log { border-left:1px solid var(--line); padding-left:20px; }
+.log-row { border-bottom:1px solid var(--line); padding:8px 0; }
+.log-row small { color:var(--muted); text-transform:uppercase; }
+@media(max-width:900px){.narrative-shell{grid-template-columns:1fr}.narrative-log{border-left:0;border-top:1px solid var(--line);padding-left:0}.table-layout{grid-template-columns:1fr}.sidebar{display:none}}
