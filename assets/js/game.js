@@ -15,7 +15,7 @@ function journal(){
  let html='';
  if(tab==='clues')html=state.clues.slice().reverse().map((c,i)=>card(c.title,c.text,`REGISTRO ${String(state.clues.length-i).padStart(2,'0')}`)).join('')||'<p class="empty">Nem todo silêncio é uma resposta. As descobertas aparecerão aqui.</p>';
  if(tab==='party'){
-  html=party.map(([name,text],i)=>card(name,text)+`<a class="character-sheet-link" href="assets/images/${['octavio','baltazar','damiao','turak'][i]}.png" target="_blank" rel="noopener">Ver ficha visual de ${esc(name)}</a>`).join('');
+  html=party.map(([name,text],i)=>card(name,text).replace('</article>',`<a class="character-sheet-link" href="assets/images/${['octavio','damiao','baltazar','turak'][i]}.png" target="_blank" rel="noopener">Ver ficha visual de ${esc(name)}</a></article>`)).join('');
   if(state.met_tiao)html+=card('Tião',state.plots.faces==='completed'?'Uma das faces de Vilar. O encontro na cela foi preparado.':'O homem que dividiu a cela e comentou sobre a fazenda.');
   if(state.case_turak)html+=card('Vilar',state.plots.faces==='completed'?'Entidade que selecionou e enquadrou os acontecimentos para dirigir as escolhas do grupo.':'O homem que salvou o motorista e ofereceu ajuda no moinho.');
  }
@@ -49,7 +49,7 @@ function render(moveFocus=false){
   b.onclick=()=>{ANV.choose(state,a.id);persist();render(true);};$('actions').appendChild(b);
  }
  $('actionCount').textContent=actions.length?`${actions.length} ${actions.length===1?'AÇÃO':'AÇÕES'}`:'';document.querySelector('.actions-wrap').hidden=!actions.length;$('endTools').hidden=!state.ending;
- $('notes').value=state.notes;journal();if(typeof diceWidget!=='undefined')diceWidget.refresh();if(moveFocus){$('scene').focus({preventScroll:true});$('scene').scrollIntoView({behavior:'instant',block:'start'});}
+ $('notes').value=state.notes;journal();if(typeof diceWidget!=='undefined')diceWidget.refresh();if(moveFocus){$('scene').focus({preventScroll:true});}
 }
 document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;journal();});
 $('notes').addEventListener('input',()=>{state.notes=$('notes').value;persist();});
@@ -59,7 +59,7 @@ $('export').onclick=()=>{const blob=new Blob([JSON.stringify(state,null,2)],{typ
 $('import').onchange=async e=>{const file=e.target.files[0];if(!file)return;try{if(file.size>2000000)throw new Error('O salvamento deve ter menos de 2 MB.');const next=ANV.validate(JSON.parse(await file.text()));confirmAction('Carregar esta noite?','O progresso atual será substituído. Cancele e exporte primeiro se quiser guardá-lo.',()=>{state=next;saveBlocked=false;$('saveWarning').hidden=true;loaded.error=null;persist();render(true);$('options').close();});}catch(err){$('optionMessage').textContent='Não foi possível carregar: '+err.message;}e.target.value='';};
 $('reset').onclick=()=>confirmAction('Começar outra noite?','Isso reinicia somente esta campanha. Exporte o progresso atual antes se quiser guardá-lo.',()=>{state=ANV.fresh();saveBlocked=false;loaded.error=null;$('saveWarning').hidden=true;persist();render(true);$('options').close();});
 $('gmButton').onclick=()=>confirmAction('Painel com spoilers','O painel do Mestre mostra estados internos e o planejamento completo. Abra apenas fora da visão dos jogadores.',()=>{location.href='gm.html';});
-$('reviewEnd').onclick=()=>{tab='investigation';journal();$('journalContent').scrollIntoView();};
+$('reviewEnd').onclick=()=>{tab='investigation';journal();};
 const diceWidget=ANVDice.mount({container:$('diceWidget'),getHistory:()=>state.logs,appendLog:entry=>{state.logs.push(entry);persist();}});
 window.addEventListener('storage',e=>{if(e.key===ANV.KEY&&e.newValue){try{state=ANV.validate(JSON.parse(e.newValue));render();}catch{}}});
 render();
