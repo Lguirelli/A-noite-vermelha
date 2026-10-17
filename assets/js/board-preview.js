@@ -4,7 +4,7 @@ $('.layout').before(stage);
 stage.innerHTML='<div class="board-caption"><span>BAR DA ESTRADA</span><strong>O último lugar antes da noite.</strong><small>Selecione um personagem e clique no chão para mover.</small></div><svg id="boardArt" viewBox="0 0 1200 800" aria-label="Bar em perspectiva isométrica"></svg><div id="pieces"></div><span id="moveStatus" role="status"></span>';
 const svg=$('#boardArt'); const project=(x,y,z=0)=>[600+(x-y)*48,260+(x+y)*22-z];
 const poly=(points,fill,stroke='#564235')=>'<polygon points="'+points.map(p=>p.join(',')).join(' ')+'" fill="'+fill+'" stroke="'+stroke+'" stroke-width="1.5"/>';
-svg.innerHTML='<image href="assets/images/bar-isometrico.png" width="1200" height="800"/>';
+svg.innerHTML='<image href="assets/maps/bar-ink.svg" width="1200" height="800"/>';
 const roomId=new URLSearchParams(location.search).get('room');let auth=null,own=null,remote=null,drag=null,pending=null,sending=false;
 try{auth=JSON.parse(sessionStorage.getItem('anv_iso_'+roomId));if(!roomId)own=localStorage.getItem('anv_player')}catch{}
 if(!roomId&&!own){location.replace('selection.html');return;}
