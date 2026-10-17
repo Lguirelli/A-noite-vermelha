@@ -4,6 +4,7 @@ const $=id=>document.getElementById(id);
 const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let storage;try{storage=window.localStorage;}catch{}
 const loaded=ANV.load(storage);let state=loaded.state,saveBlocked=Boolean(loaded.error),tab='clues';
+if(new URLSearchParams(location.search).get('begin')==='1'&&state.scene==='start')ANV.choose(state,'begin');
 if(loaded.error){$('saveWarning').hidden=false;$('saveWarning').textContent=loaded.error;}
 function persist(){const ok=!saveBlocked&&ANV.save(state,storage);$('saveStatus').textContent=ok?'Progresso salvo neste navegador':'Sem salvamento automático • exporte uma cópia';if(!ok){$('saveWarning').hidden=false;$('saveWarning').textContent=loaded.error||'O navegador não permitiu salvar. O jogo continua nesta aba; use “Baixar salvamento” antes de fechar.';}return ok;}
 function card(title,text,kicker=''){return `<article class="journal-card">${kicker?`<span class="tiny">${esc(kicker)}</span>`:''}<h3>${esc(title)}</h3><p>${esc(text)}</p></article>`;}
@@ -14,7 +15,7 @@ function journal(){
  let html='';
  if(tab==='clues')html=state.clues.slice().reverse().map((c,i)=>card(c.title,c.text,`REGISTRO ${String(state.clues.length-i).padStart(2,'0')}`)).join('')||'<p class="empty">Nem todo silêncio é uma resposta. As descobertas aparecerão aqui.</p>';
  if(tab==='party'){
-  html=party.map(([name,text])=>card(name,text)).join('');
+  html=party.map(([name,text],i)=>card(name,text)+`<a class="character-sheet-link" href="assets/images/${['octavio','baltazar','damiao','turak'][i]}.png" target="_blank" rel="noopener">Ver ficha visual de ${esc(name)}</a>`).join('');
   if(state.met_tiao)html+=card('Tião',state.plots.faces==='completed'?'Uma das faces de Vilar. O encontro na cela foi preparado.':'O homem que dividiu a cela e comentou sobre a fazenda.');
   if(state.case_turak)html+=card('Vilar',state.plots.faces==='completed'?'Entidade que selecionou e enquadrou os acontecimentos para dirigir as escolhas do grupo.':'O homem que salvou o motorista e ofereceu ajuda no moinho.');
  }
@@ -48,7 +49,7 @@ function render(moveFocus=false){
   b.onclick=()=>{ANV.choose(state,a.id);persist();render(true);};$('actions').appendChild(b);
  }
  $('actionCount').textContent=actions.length?`${actions.length} ${actions.length===1?'AÇÃO':'AÇÕES'}`:'';document.querySelector('.actions-wrap').hidden=!actions.length;$('endTools').hidden=!state.ending;
- $('notes').value=state.notes;journal();if(moveFocus){$('scene').focus({preventScroll:true});$('scene').scrollIntoView({behavior:'instant',block:'start'});}
+ $('notes').value=state.notes;journal();if(typeof diceWidget!=='undefined')diceWidget.refresh();if(moveFocus){$('scene').focus({preventScroll:true});$('scene').scrollIntoView({behavior:'instant',block:'start'});}
 }
 document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;journal();});
 $('notes').addEventListener('input',()=>{state.notes=$('notes').value;persist();});
@@ -59,7 +60,7 @@ $('import').onchange=async e=>{const file=e.target.files[0];if(!file)return;try{
 $('reset').onclick=()=>confirmAction('Começar outra noite?','Isso reinicia somente esta campanha. Exporte o progresso atual antes se quiser guardá-lo.',()=>{state=ANV.fresh();saveBlocked=false;loaded.error=null;$('saveWarning').hidden=true;persist();render(true);$('options').close();});
 $('gmButton').onclick=()=>confirmAction('Painel com spoilers','O painel do Mestre mostra estados internos e o planejamento completo. Abra apenas fora da visão dos jogadores.',()=>{location.href='gm.html';});
 $('reviewEnd').onclick=()=>{tab='investigation';journal();$('journalContent').scrollIntoView();};
-for(const die of [4,6,8,10,12,20]){const b=document.createElement('button');b.textContent='d'+die;b.setAttribute('aria-label','Rolar dado de '+die+' lados');b.onclick=()=>{const value=1+Math.floor(Math.random()*die);$('diceResult').textContent=`d${die} → ${value}`;state.logs.push({text:`Rolagem d${die}: ${value}`});persist();};$('diceButtons').appendChild(b);}
+const diceWidget=ANVDice.mount({container:$('diceWidget'),getHistory:()=>state.logs,appendLog:entry=>{state.logs.push(entry);persist();}});
 window.addEventListener('storage',e=>{if(e.key===ANV.KEY&&e.newValue){try{state=ANV.validate(JSON.parse(e.newValue));render();}catch{}}});
 render();
 })();

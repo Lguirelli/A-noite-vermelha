@@ -40,7 +40,7 @@
     document.querySelectorAll('[data-panel]').forEach(x=>x.classList.toggle('active',x.dataset.panel===b.dataset.tab));
   });
   document.querySelectorAll('[data-die]').forEach(b=>b.onclick=()=>{
-    const die=+b.dataset.die, value=1+Math.floor(Math.random()*die);document.querySelector('#rollResult').textContent=value;log(`Rolagem d${die}: ${value}`);
+    const die=+b.dataset.die, value=ANVDice.roll(`1d${die}`).total;document.querySelector('#rollResult').textContent=value;log(`Rolagem d${die}: ${value}`);
   });
   document.querySelectorAll('.hotspot').forEach(b=>b.onclick=()=>{document.querySelector('#secretText').textContent=b.dataset.secret;document.querySelector('#secretDialog').showModal();log('O Mestre revelou uma percepção oculta.');});
   document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>b.closest('dialog').close());
