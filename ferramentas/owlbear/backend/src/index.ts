@@ -53,7 +53,8 @@ const controllers: Array<Controller> = [
 ];
 
 server.loadMiddleware(globalMiddleware);
-server.loadControllers(controllers);
+server.loadControllers(controllers.filter(c => !(c instanceof HealthcheckController)));
+app.get("/health",(_req,res)=>res.json({ok:true}));
 const gameRoot = process.env.ANV_ROOT || path.resolve(process.cwd(), "../../..");
 const requireModule = createRequire(import.meta.url);
 requireModule(path.join(gameRoot,"server/campaign.cjs"))(app,express);
@@ -61,7 +62,7 @@ app.use("/tabuleiro",express.static(path.join(gameRoot,"tabuleiro")));
 app.get("/tabuleiro/*", (_req,res)=>res.sendFile(path.join(gameRoot,"tabuleiro/index.html")));
 app.use((req,res,next)=>{if(/^\/(ferramentas|server|data|tests)(\/|$)/.test(req.path))res.sendStatus(404);else next();});
 app.use(express.static(gameRoot));
-app.get("/play",(_req,res)=>res.sendFile(path.join(gameRoot,"game.html")));
+app.get("/play",(_req,res)=>res.sendFile(path.join(gameRoot,"validacao.html")));
 app.get("/gm",(_req,res)=>res.sendFile(path.join(gameRoot,"gm.html")));
 
 const httpServer = server.run();

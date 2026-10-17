@@ -1,31 +1,25 @@
 <!doctype html>
 <html lang="pt-BR">
-<head>
- <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
- <meta name="theme-color" content="#171918"><meta name="description" content="Uma noite de horror rural. Quatro desconhecidos, um livro de nomes e escolhas que deixam marcas.">
- <title>A Noite Vermelha — Tabuleiro 2.5D</title><link rel="icon" href="assets/moon.svg" type="image/svg+xml"><link rel="stylesheet" href="assets/css/game.css">
-<link rel="stylesheet" href="assets/css/logo.css"><link rel="stylesheet" href="assets/css/dice.css"><link rel="stylesheet" href="assets/css/board-preview.css"></head>
-<body class="board-preview">
- <a class="skip" href="#scene">Ir para a cena</a>
- <header class="topbar"><a class="brand" href="index.html"><span class="logo-mask brand-logo" role="img" aria-label="A Noite Vermelha"></span></a><span id="chapter" class="chapter">UMA HISTÓRIA PARA UMA NOITE</span><button id="menuButton" class="quiet">Salvar / opções</button></header>
- <main class="layout">
-  <section class="play-area">
-   <div class="landscape" aria-hidden="true"><div class="moon"></div><div class="ridge back"></div><div class="ridge front"></div><div class="house"><i></i></div><div class="fence"></div><span class="landscape-label">QUANDO A TERRA COBRA O QUE DEU.</span></div>
-   <div id="saveWarning" role="alert" hidden></div>
-   <article id="scene" tabindex="-1"></article>
-   <section class="actions-wrap" aria-labelledby="actionHeading"><div class="section-label"><span id="actionHeading">O QUE VOCÊS FAZEM?</span><span id="actionCount"></span></div><div id="actions"></div></section>
-   <section id="endTools" hidden><button id="reviewEnd">Rever as marcas desta noite</button><p>A sessão chegou ao fim. Seu diário e suas escolhas continuam salvos.</p></section>
-   <footer class="scene-footer"><span id="saveStatus">Progresso salvo neste navegador</span><span>As escolhas deixam marcas.</span></footer>
-  </section>
-  <aside class="journal" aria-label="Caderno do grupo"><div class="journal-heading"><span class="tiny">CADERNO DO GRUPO</span><h2>O que ficou.</h2><p id="clueCount">Nenhuma descoberta ainda.</p></div>
-   <nav class="tabs" aria-label="Páginas do caderno"><button data-tab="clues" aria-pressed="true">Pistas</button><button data-tab="names" aria-pressed="false">Nomes</button><button data-tab="party" aria-pressed="false">Grupo</button><button data-tab="investigation" aria-pressed="false">Fios</button></nav>
-   <div id="journalContent" class="journal-content" aria-live="polite"></div>
-   <details class="notes"><summary>Anotações da mesa</summary><label for="notes">Suas hipóteses</label><textarea id="notes" rows="4" maxlength="12000" placeholder="O que ainda não se encaixa?"></textarea></details>
-   <details class="dice"><summary>Rolar dados</summary><div id="diceWidget"></div></details>
-  </aside>
- </main>
- <dialog id="options"><form method="dialog"><button class="close" aria-label="Fechar opções">×</button></form><span class="tiny">A NOITE VERMELHA</span><h2>Guardar a noite</h2><p>O progresso é local a este navegador. Exporte uma cópia para trocar de aparelho ou guardar outra sessão.</p><div class="option-grid"><a class="button-link" href="sala.html">Mesa com amigos</a><button id="export">Baixar salvamento</button><label class="file-button">Carregar salvamento<input id="import" type="file" accept=".json,application/json"></label><button id="gmButton">Abrir painel do Mestre</button><a class="button-link" href="mesa/index.html">Mesa visual de apoio</a><button id="reset" class="danger">Começar outra noite</button></div><p id="optionMessage" role="status"></p></dialog>
- <dialog id="confirmDialog"><h2 id="confirmTitle">Confirmar</h2><p id="confirmText"></p><div class="dialog-actions"><button id="cancelConfirm">Cancelar</button><button id="acceptConfirm">Confirmar</button></div></dialog>
- <noscript><p class="noscript">Ative JavaScript para jogar esta campanha interativa.</p></noscript>
- <script src="assets/js/story.js"></script><script src="assets/js/state.js"></script><script src="assets/vendor/rpg-dice-roller.js"></script><script src="assets/js/dice.js"></script><script src="assets/js/characters.js"></script><script src="assets/js/preview-game.js"></script>
-<script src="assets/js/board-preview.js"></script></body></html>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#091514"><meta name="description" content="A Noite Vermelha. Um jogo narrativo de horror rural, pactos e escolhas que deixam marcas."><title>A Noite Vermelha — Entre antes de escurecer</title><link rel="icon" href="assets/moon.svg"><link rel="stylesheet" href="assets/css/landing.css"><link rel="stylesheet" href="assets/css/logo.css"><link rel="preload" as="image" href="assets/images/landing-hero-v2.png"><link rel="stylesheet" href="assets/css/screens.css"></head>
+<body>
+<a class="skip" href="#inicio">Pular para o início</a>
+<header class="masthead"><a class="wordmark" href="index.html" aria-label="A Noite Vermelha, início"><span class="logo-mask brand-logo" aria-hidden="true"></span><span>UM JOGO NARRATIVO</span></a><nav aria-label="Navegação principal"><a href="#personagens">Personagens</a><a href="#como-jogar">Como jogar</a><button id="motion" aria-pressed="true">Movimento: ligado</button></nav></header>
+<main>
+ <section class="hero" id="inicio" aria-labelledby="title">
+  <img class="hero-art" src="assets/images/landing-hero-v2.png" alt="Quatro viajantes diante de uma propriedade rural, cercados por uma floresta escura sob um céu vermelho." fetchpriority="high" width="1536" height="1024">
+  <div class="hero-content"><p class="eyebrow">HORROR RURAL · MISTÉRIO · ESCOLHAS</p><h1 id="title" class="logo-mask hero-logo" aria-label="A Noite Vermelha"></h1><p class="tagline">Toda promessa tem um preço.<br>Esta noite, alguém vem cobrar.</p><p class="intro">Quatro desconhecidos. Uma cidade que fecha as portas.<br>O que vocês fazem quando o medo sabe seus nomes?</p><div class="entry"><a class="new-game" href="selection.html">JOGAR COM AMIGOS</a><button id="enter" class="primary">INICIAR A NOITE VERMELHA</button><button id="newGame" class="new-game" hidden>Começar outra noite</button><span id="session" class="session">A noite começa com uma escolha.</span></div><p id="saveError" role="status" hidden></p></div>
+  <div class="hero-bottom"><a href="#como-jogar" class="chapter-link"><span class="chapter-number">01</span><span>ANTES DA PRIMEIRA ESCOLHA<small>Conheça a experiência</small></span></a><p class="art-caption">NÃO ATENDA À TERCEIRA BATIDA.</p><span class="edition">UMA HISTÓRIA.<br>MUITAS CICATRIZES.</span></div>
+ </section>
+ <section class="cast" id="personagens" aria-labelledby="cast-title"><div class="cast-heading"><div><p class="eyebrow">QUATRO HISTÓRIAS, UMA NOITE</p><h2 id="cast-title">Quatro rostos.<br>Segredos demais.</h2></div><p>Cada um carrega algo que não consegue explicar.<br>Esta noite, os caminhos se cruzam.</p></div><div class="cast-grid">
+ <button class="cast-card" data-character="octavio" aria-label="Ver ficha visual de Octávio"><img src="assets/images/octavio.png" alt="Octávio com manto negro bordado de vermelho e máscara branca na mão." loading="lazy" width="1122" height="1402"><span class="cast-name">Octávio</span><span class="cast-role">A voz da máscara</span><span class="view-sheet">Ver ficha visual</span></button>
+ <button class="cast-card" data-character="damiao" aria-label="Ver ficha visual de Damião"><img src="assets/images/damiao.png" alt="Damião de casaco escuro, com a Última Chama envolvendo seu braço." loading="lazy" width="948" height="1659"><span class="cast-name">Damião</span><span class="cast-role">O condutor da Última Chama</span><span class="view-sheet">Ver ficha visual</span></button>
+ <button class="cast-card" data-character="baltazar" aria-label="Ver ficha visual de Baltazar"><img src="assets/images/baltazar.png" alt="Baltazar, forte e sorridente, com costuras na pele, ataduras e traje remendado." loading="lazy" width="948" height="1659"><span class="cast-name">Baltazar</span><span class="cast-role">O remendado</span><span class="view-sheet">Ver ficha visual</span></button>
+ <button class="cast-card" data-character="turak" aria-label="Ver ficha visual de Turak"><img src="assets/images/turak.png" alt="Turak com capa de caçador, arco e aljava de flechas." loading="lazy" width="1024" height="1536"><span class="cast-name">Turak</span><span class="cast-role">O caçador da floresta</span><span class="view-sheet">Ver ficha visual</span></button>
+ </div></section>
+ <section class="about" id="como-jogar" aria-labelledby="about-title"><div class="about-heading"><p class="eyebrow">PARA UMA ÚNICA NOITE</p><h2 id="about-title">O medo aproxima.<br>As escolhas separam.</h2><p>Uma experiência de horror e investigação para jogar sozinho ou compartilhar com a mesa. A verdade não vem inteira. E nem todo caminho deixa as mesmas pessoas de pé.</p></div><div class="steps"><article><span>01 / ENTRE NA HISTÓRIA</span><h3>Quatro desconhecidos.</h3><p>Octávio, Damião, Baltazar e Turak. Cada um chegou por um motivo. Nenhum sabe o que a noite guarda.</p></article><article><span>02 / SIGA OS VESTÍGIOS</span><h3>Olhe uma segunda vez.</h3><p>Leia as cenas, discuta com o grupo e escolha ações. O caderno reúne apenas as pistas que vocês descobrirem.</p></article><article><span>03 / CARREGUE AS MARCAS</span><h3>Avançar tem um custo.</h3><p>Confrontos e conversas mudam relações, informação e sobreviventes. Uma pista perdida não encerra a história.</p></article></div><div class="practical"><p><strong>Uma sessão de 4–6 horas em mesa.</strong> No seu ritmo se jogar sozinho.</p><p>Progresso salvo neste navegador. Durante o jogo, use “Salvar / opções” para guardar uma cópia.</p><a href="#inicio">Voltar ao início</a></div></section>
+</main><footer><span class="logo-mask footer-logo" role="img" aria-label="A Noite Vermelha"></span><p>Horror sobrenatural · Violência ficcional · Temas de morte</p><span>O SILÊNCIO TAMBÉM CONTA UMA HISTÓRIA.</span></footer>
+<dialog id="newDialog"><h2>Outra noite.<br>Outras escolhas.</h2><p>A sessão atual será substituída. Para guardá-la, volte ao jogo e baixe o salvamento antes de recomeçar.</p><div><button id="cancelNew">Manter minha sessão</button><button id="confirmNew" class="primary">Começar do início</button></div></dialog>
+<dialog id="characterDialog" class="character-dialog"><form method="dialog"><button aria-label="Fechar ficha visual">Fechar ficha</button></form><h2 id="characterName"></h2><img id="characterImage" alt=""></dialog>
+<noscript><p class="no-script">Ative JavaScript para iniciar ou continuar a história.</p></noscript>
+<script src="assets/js/story.js"></script><script src="assets/js/state.js"></script><script src="assets/js/landing.js"></script>
+<script src="assets/js/screens.js"></script></body></html>
