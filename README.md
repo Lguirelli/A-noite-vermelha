@@ -1,126 +1,35 @@
-# A Noite Vermelha — VTT Skeleton
+# A Noite Vermelha — VTT
 
-Esqueleto de VTT web para a campanha **A Noite Vermelha**.
+Protótipo web do RPG **A Noite Vermelha**.
 
-A arquitetura foi inspirada no projeto open-source SimpleVTT (MIT), mas este repositório é um esqueleto novo e reduzido, focado nas mecânicas específicas da campanha.
+## O que abre no deploy
 
-## O que já está preparado
+Este repositório agora possui páginas HTML estáticas reais na raiz:
 
-- FastAPI
-- SQLAlchemy
-- PostgreSQL no Docker / SQLite em desenvolvimento local
-- Sessão simples de usuário para prototipação
-- Campanhas e membros
-- Personagens
-- Cenas/mapas
-- Tokens e movimentação
-- WebSocket por campanha
-- Eventos privados por jogador
-- Camadas de percepção sobrenatural
-- Segredos/revelações com destinatários específicos
-- Estrutura de front-end sem framework (HTML + CSS + JS)
-- Docker Compose
-- Teste de smoke
+- `/` → `index.html` — entrada do jogo
+- `/game.html` ou `/play` → mesa
+- `/gm.html` ou `/gm` → direção narrativa do Mestre
 
-## Conceito de percepção
+O protótipo funciona sem backend: plot points, pistas e registro da sessão são salvos em `localStorage` no navegador. Isso elimina a dependência de FastAPI/Jinja para abrir a interface no deploy.
 
-Cada personagem pode possuir uma `perception_mask`. Uma cena e seus elementos podem definir uma `visibility_mask`.
-
-Exemplos:
-
-- `mundane`: qualquer humano vê.
-- `cursed`: apenas personagens marcados por maldição.
-- `witness`: manifestações ligadas a Vilar / testemunhas.
-- `otherworld`: fenômenos sobrenaturais amplos.
-
-Isso permite que Turak veja apenas a versão mundana de uma cena enquanto Octávio, Damião ou Baltazar recebem elementos adicionais — ou o contrário, quando a maldição impede os demais de atravessar/interagir com algo comum.
-
-## Rodando com Docker
+## Testar localmente
 
 ```bash
-cp .env.example .env
-docker compose up --build
+python -m http.server 8080
 ```
 
-Acesse: http://localhost:8013
+Abra `http://localhost:8080`.
 
-## Rodando localmente
+## Vercel
 
-```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-cp .env.example .env
-uvicorn app.main:app --reload --port 8013
-```
+Importe este diretório como projeto e faça deploy. O `vercel.json` força `/`, `/play`, `/table` e `/gm` para as páginas HTML correspondentes.
 
-Sem `DATABASE_URL`, o projeto usa SQLite em `./anoitevermelha.db`.
+## Estrutura narrativa
 
-## Primeiras extensões recomendadas
+- Plot points **fixos** não podem ser perdidos.
+- Plot points **móveis** podem ser concluídos, ignorados ou perdidos definitivamente.
+- O painel do Mestre controla a progressão sem expor a estrutura aos jogadores.
 
-1. autenticação real + convites;
-2. upload de mapas e tokens;
-3. canvas com zoom/grid/fog of war;
-4. ficha completa dos quatro personagens;
-5. painel exclusivo do Mestre;
-6. sistema de rolagem e log;
-7. iniciativa/combate;
-8. handouts, pistas e diário;
-9. persistência de revelações por sessão;
-10. áudio/ambiente.
+## Backend legado
 
-## Estrutura
-
-```text
-app/
-  main.py                 # boot da aplicação
-  config.py               # variáveis de ambiente
-  database.py             # SQLAlchemy
-  models.py               # entidades centrais
-  schemas.py              # payloads da API
-  dependencies.py         # usuário/campanha atual
-  services/
-    visibility.py         # regras de percepção
-    websocket.py          # broadcast e mensagens privadas
-  routes/
-    campaigns.py
-    characters.py
-    scenes.py
-    tokens.py
-    secrets.py
-    websocket.py
-  templates/
-    index.html
-    tabletop.html
-  static/
-    css/app.css
-    js/tabletop.js
-```
-
-## Referência e licença
-
-O desenho arquitetural toma como referência o SimpleVTT de Matthew Kolakowski, distribuído sob licença MIT. Nenhuma parte substancial do código-fonte do SimpleVTT foi copiada neste esqueleto.
-
-Veja `NOTICE.md`.
-
-## Deploy
-
-A interface do jogo é sempre a rota `/`. A documentação interativa da API fica em `/docs`.
-
-- **Docker/Render/Railway:** inicia com `uvicorn app.main:app`.
-- **Vercel:** o arquivo raiz `main.py` expõe o FastAPI para detecção automática; não é necessário redirecionar `/` para `/docs`.
-- O mundo inicial é criado automaticamente no primeiro boot; `python seed.py` continua disponível para desenvolvimento local.
-
-> Para produção persistente, configure `DATABASE_URL` com PostgreSQL. SQLite é indicado apenas para desenvolvimento/protótipo.
-
-## Direção narrativa: plot points fixos e móveis
-
-O protótipo agora inclui um painel exclusivo do Mestre em `/narrative/{campaign_id}/gm`.
-
-- **Fixos** sustentam a espinha dorsal da campanha e não podem ser marcados como perdidos.
-- **Móveis** podem ser ativados em diferentes locais e também podem ser **perdidos definitivamente**.
-- Um móvel perdido não é automaticamente reapresentado em outro NPC ou local.
-- Pré-requisitos só consideram plot points **concluídos**; perder uma pista opcional pode fechar caminhos secundários sem impedir os pontos fixos essenciais.
-- O histórico narrativo registra ativações, conclusões e perdas.
-
-A mesa do Mestre exibe um botão **Direção narrativa** na barra lateral.
+A pasta `app/` contém a base FastAPI anterior e pode ser reutilizada quando o protótipo for conectado a um banco e multiplayer real. A interface atual não depende dela para funcionar.

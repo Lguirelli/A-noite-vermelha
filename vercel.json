@@ -1,0 +1,11 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "trailingSlash": false,
+  "rewrites": [
+    { "source": "/", "destination": "/index.html" },
+    { "source": "/play", "destination": "/game.html" },
+    { "source": "/game", "destination": "/game.html" },
+    { "source": "/table", "destination": "/game.html" },
+    { "source": "/gm", "destination": "/gm.html" }
+  ]
+}
