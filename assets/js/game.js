@@ -8,14 +8,14 @@ if(new URLSearchParams(location.search).get('begin')==='1'&&state.scene==='start
 if(loaded.error){$('saveWarning').hidden=false;$('saveWarning').textContent=loaded.error;}
 function persist(){const ok=!saveBlocked&&ANV.save(state,storage);$('saveStatus').textContent=ok?'Progresso salvo neste navegador':'Sem salvamento automático • exporte uma cópia';if(!ok){$('saveWarning').hidden=false;$('saveWarning').textContent=loaded.error||'O navegador não permitiu salvar. O jogo continua nesta aba; use “Baixar salvamento” antes de fechar.';}return ok;}
 function card(title,text,kicker=''){return `<article class="journal-card">${kicker?`<span class="tiny">${esc(kicker)}</span>`:''}<h3>${esc(title)}</h3><p>${esc(text)}</p></article>`;}
-const party=[['Octávio','Procura uma obra incompleta. Usa máscara e reconhece fragmentos que não lembra ter aprendido.'],['Damião','A Última Chama acompanha uma dívida que ele ainda tenta compreender.'],['Baltazar','Seu corpo guarda marcas diferentes. Suas decisões pertencem a ele.'],['Turak','Um viajante humano de faro extraordinário, atento ao que os outros deixam passar.']];
+const party=CHARACTERS.map(c=>[c.name,c.characterClass+' · '+c.role]);
 function journal(){
  $('clueCount').textContent=state.clues.length?`${state.clues.length} descobertas registradas`:'A noite ainda não deixou pistas.';
  document.querySelectorAll('[data-tab]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.tab===tab)));
  let html='';
  if(tab==='clues')html=state.clues.slice().reverse().map((c,i)=>card(c.title,c.text,`REGISTRO ${String(state.clues.length-i).padStart(2,'0')}`)).join('')||'<p class="empty">Nem todo silêncio é uma resposta. As descobertas aparecerão aqui.</p>';
  if(tab==='party'){
-  html=party.map(([name,text],i)=>card(name,text).replace('</article>',`<a class="character-sheet-link" href="assets/images/${['octavio','damiao','baltazar','turak'][i]}.png" target="_blank" rel="noopener">Ver ficha visual de ${esc(name)}</a></article>`)).join('');
+  html=party.map(([name,text],i)=>card(name,text).replace('</article>',`<a class="character-sheet-link" href="assets/images/${CHARACTERS[i].id}.png" target="_blank" rel="noopener">Ver ficha visual de ${esc(name)}</a></article>`)).join('');
   if(state.met_tiao)html+=card('Tião',state.plots.faces==='completed'?'Uma das faces de Vilar. O encontro na cela foi preparado.':'O homem que dividiu a cela e comentou sobre a fazenda.');
   if(state.case_turak)html+=card('Vilar',state.plots.faces==='completed'?'Entidade que selecionou e enquadrou os acontecimentos para dirigir as escolhas do grupo.':'O homem que salvou o motorista e ofereceu ajuda no moinho.');
  }
