@@ -2,7 +2,7 @@
 'use strict';
 const $=id=>document.getElementById(id);
 const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-let storage;try{storage={getItem:k=>window.localStorage.getItem('preview_'+k),setItem:(k,v)=>window.localStorage.setItem('preview_'+k,v)};}catch{}
+let storage;try{storage=window.localStorage;}catch{}
 const loaded=ANV.load(storage);let state=loaded.state,saveBlocked=Boolean(loaded.error),tab='clues';
 if(state.scene==='start')ANV.choose(state,'begin');
 if(loaded.error){$('saveWarning').hidden=false;$('saveWarning').textContent=loaded.error;}
