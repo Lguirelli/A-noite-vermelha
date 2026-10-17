@@ -1,39 +1,12 @@
 (() => {
-  let state = ANV.unlock(ANV.load()); ANV.save(state); let filter='all';
-  const statusLabel={locked:'Bloqueado',available:'Disponível',active:'Ativo',completed:'Concluído',lost:'Perdido'};
-  const board=document.querySelector('#plotBoard');
-  function render(){
-    state=ANV.unlock(state);ANV.save(state);board.innerHTML='';
-    const acts=[...new Set(state.plots.map(p=>p.act))];
-    for(const act of acts){
-      const pts=state.plots.filter(p=>p.act===act && (filter==='all'||p.type===filter)); if(!pts.length)continue;
-      const section=document.createElement('section');section.className='act-section';section.innerHTML=`<div class="act-heading"><span>ATO ${act}</span><small>${pts.filter(p=>p.status==='completed').length}/${pts.length} concluídos</small></div><div class="plot-grid-static"></div>`;
-      const grid=section.querySelector('.plot-grid-static');
-      pts.forEach(p=>{
-        const card=document.createElement('article');card.className=`plot-card-static ${p.type} status-${p.status}`;
-        const lose=p.canLose?`<button class="plot-action danger" data-action="lost">Perder</button>`:'';
-        card.innerHTML=`<div class="plot-top"><span class="plot-type">${p.type==='fixed'?'FIXO':'MÓVEL'}</span><span class="status-chip">${statusLabel[p.status]}</span></div><h3>${p.title}</h3><p>${p.summary}</p><div class="plot-deps">${p.depends?.length?`Depende de: ${p.depends.map(id=>state.plots.find(x=>x.id===id)?.title||id).join(', ')}`:'Sem pré-requisito'}</div><div class="plot-buttons"><button class="plot-action" data-action="active">Ativar</button><button class="plot-action success" data-action="completed">Concluir</button>${lose}<button class="plot-action subtle" data-action="available">Reabrir</button></div>`;
-        card.querySelectorAll('[data-action]').forEach(b=>b.onclick=()=>setStatus(p.id,b.dataset.action));grid.appendChild(card);
-      });board.appendChild(section);
-    }
-    const done=state.plots.filter(p=>p.status==='completed').length,total=state.plots.length;document.querySelector('#progressText').textContent=`${done} / ${total}`;document.querySelector('#progressBar').style.width=`${total?done/total*100:0}%`;
-    document.querySelector('#storyState').innerHTML=`<div><small>ATO</small><strong>${state.story.act}</strong></div><div><small>MEDO DA CIDADE</small><strong>${state.story.fear}%</strong></div><div><small>PACTOS</small><strong>${state.story.pactKnowledge}%</strong></div><div><small>CONFIANÇA EM VILAR</small><strong>${state.story.vilarTrust}%</strong></div>`;
-    const log=document.querySelector('#narrativeLog');log.innerHTML=state.narrativeLog.slice().reverse().slice(0,12).map(x=>`<div class="narrative-log-row"><time>${x.time}</time><span>${x.text}</span></div>`).join('')||'<p class="empty-note">Nenhuma alteração ainda.</p>';
-  }
-  function setStatus(id,status){
-    const p=state.plots.find(x=>x.id===id);if(!p)return;if(status==='lost'&&!p.canLose)return;
-    if(p.status==='locked'&&status==='active'){alert('Este ponto ainda está bloqueado pelos pré-requisitos.');return;}
-    p.status=status;
-    const time=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});state.narrativeLog.push({time,text:`${p.title} → ${statusLabel[status]}`});
-    if(status==='completed'){
-      if(p.id==='arrival') state.story.fear=Math.max(state.story.fear,45);
-      if(p.id==='old-man') state.story.pactKnowledge+=10;
-      if(p.id==='book') state.story.pactKnowledge+=20;
-      if(p.id==='marked-names') state.story.act=2;
-    }
-    ANV.save(state);render();
-  }
-  document.querySelectorAll('[data-filter]').forEach(b=>b.onclick=()=>{filter=b.dataset.filter;document.querySelectorAll('[data-filter]').forEach(x=>x.classList.toggle('active',x===b));render();});
-  document.querySelector('#resetNarrative').onclick=()=>{if(confirm('Resetar todo o estado local do protótipo?')){state=ANV.reset();render();}};
-  render();
+const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const labels={pending:'PENDENTE',completed:'CONCLUÍDO',lost:'PERDIDO'};
+function render(){
+ let storage;try{storage=window.localStorage;}catch{}
+ const loaded=ANV.load(storage),s=loaded.state;
+ const status=p=>`<div class="plot"><span>${esc(p.title)}<small>Ato ${p.act} · ${p.type==='fixed'?'Fixo — não pode ser perdido':'Móvel — pode ser perdido'}</small></span><span class="status ${s.plots[p.id]}">${labels[s.plots[p.id]]}</span></div>`;
+ document.getElementById('gmContent').innerHTML=`<span class="eyebrow">MESTRE • ATO ${s.stage}</span><h1>${esc(STORY.scenes[s.scene].title)}</h1>${loaded.error?'<p>'+esc(loaded.error)+'</p>':''}<p>Os estados mudam pelas ações da mesa. Fixos não podem ser perdidos; móveis não concluídos expiram ao fechar sua janela narrativa. Uma perda nunca vale como conclusão.</p><section class="gm-box pacing"><h2>Uma noite, com espaço para jogar</h2><p>Roteiro de mesa estimado: 4–6 horas, incluindo interpretação, debate e resolução livre de confrontos. Ler e clicar sem interpretar leva menos tempo. Não há esperas artificiais.</p><p>00:00–00:25 bar e prisão · 00:25–00:50 cela · 00:50–01:00 manhã · 01:00–02:15 fazenda (máximo 90 min) · 02:15–03:00 nomes · 03:00–04:15 histórias pessoais · 04:15–05:00 moinho · 05:00–06:00 floresta e desfecho.</p><details><summary>Perguntas para dar espaço aos jogadores</summary><p>Bar: por que cada um veio por conta própria? Cela: o que contam ou escondem dos outros? Fazenda: o que nas falas sugere um mal-entendido? Nomes: que prova derrubaria a hipótese de vocês? Histórias pessoais: o que ainda pertence ao personagem depois da revelação? Final: quem paga pelo caminho escolhido?</p></details><details><summary>Regras para conduzir sem entregar a verdade</summary><p>Tião não demonstra poderes. Só narrar as reações pessoais após as ações correspondentes. O avô reage por medo. A morte violenta acontece sobre a marca de cobrança; não presumir que toda morte comum encerra um pacto geracional. A floresta é predatória; a mentira é que destruí-la resolverá tudo. Transferências realmente ocorreram, mas não mudam a entidade dona do pacto.</p><p>Os nomes adicionais Bento, Rosa, Joaquim e Inês, a data de 1871 e os detalhes dos documentos são concretizações deste protótipo. O nome interno A não aparece como nome próprio na interface dos jogadores. Os quatro finais são resoluções propostas para o trecho final aberto do briefing.</p></details></section><div class="gm-grid"><section class="gm-box"><h2>Espinha dorsal</h2>${STORY.plots.filter(p=>p.type==='fixed').map(status).join('')}<h2 style="margin-top:30px">Oportunidades</h2>${STORY.plots.filter(p=>p.type==='mobile').map(status).join('')}</section><section><div class="gm-box"><h2>Estado persistente</h2><dl class="variables">${Object.keys(STORY.initialVariables).map(k=>`<dt>${esc(k)}</dt><dd>${esc(s[k])}</dd>`).join('')}</dl></div><div class="gm-box"><h2>Histórico da direção</h2>${s.logs.filter(l=>l.private).map(l=>`<p>${esc(l.text)}</p>`).join('')||'<p>Nenhuma oportunidade encerrada.</p>'}</div></section></div>`;
+}
+document.getElementById('revealGM').onclick=()=>{document.getElementById('gmGate').hidden=true;document.getElementById('gmContent').hidden=false;render();};
+window.addEventListener('storage',e=>{if(e.key===ANV.KEY&&!document.getElementById('gmContent').hidden)render();});
 })();

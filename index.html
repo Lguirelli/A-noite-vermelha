@@ -1,36 +1,31 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#090707">
-  <title>A Noite Vermelha</title>
-  <link rel="stylesheet" href="/assets/css/game.css">
+ <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+ <meta name="theme-color" content="#171918"><meta name="description" content="Uma noite de horror rural. Quatro desconhecidos, um livro de nomes e escolhas que deixam marcas.">
+ <title>A Noite Vermelha — Jogo</title><link rel="icon" href="assets/moon.svg" type="image/svg+xml"><link rel="stylesheet" href="assets/css/game.css">
 </head>
-<body class="landing-page">
-  <div class="noise"></div>
-  <main class="hero-shell">
-    <section class="hero-copy">
-      <p class="kicker">UMA MESA DE RPG ONLINE</p>
-      <h1>A NOITE<br><span>VERMELHA</span></h1>
-      <p class="lead">A cidade está acordada. As luzes estão apagando. E alguém veio cobrar uma dívida antiga.</p>
-      <div class="entry-actions">
-        <a class="btn btn-primary" href="/game.html?role=player">Entrar como jogador</a>
-        <a class="btn btn-ghost" href="/game.html?role=gm">Entrar como mestre</a>
-      </div>
-      <p class="tiny">Protótipo jogável — estado salvo neste navegador.</p>
-    </section>
-    <aside class="session-card">
-      <div class="session-card__glow"></div>
-      <p class="overline">SESSÃO ATIVA</p>
-      <h2>O Pacto da Fazenda</h2>
-      <p>Quatro viajantes chegam a uma cidade que teme cobradores de pactos. Nesta noite, ninguém sabe quem está sendo caçado.</p>
-      <div class="party-row">
-        <span title="Octávio">O</span><span title="Baltazar">B</span><span title="Damião">D</span><span title="Turak">T</span>
-      </div>
-      <div class="session-meta"><span>4 jogadores</span><span>ATO I</span></div>
-    </aside>
-  </main>
-  <script src="/assets/js/state.js"></script>
-</body>
-</html>
+<body>
+ <a class="skip" href="#scene">Ir para a cena</a>
+ <header class="topbar"><a class="brand" href="index.html"><span class="seal">N</span><span>A NOITE<br><b>VERMELHA</b></span></a><span id="chapter" class="chapter">UMA HISTÓRIA PARA UMA NOITE</span><button id="menuButton" class="quiet">Salvar / opções</button></header>
+ <main class="layout">
+  <section class="play-area">
+   <div class="landscape" aria-hidden="true"><div class="moon"></div><div class="ridge back"></div><div class="ridge front"></div><div class="house"><i></i></div><div class="fence"></div><span class="landscape-label">QUANDO A TERRA COBRA O QUE DEU.</span></div>
+   <div id="saveWarning" role="alert" hidden></div>
+   <article id="scene" tabindex="-1"></article>
+   <section class="actions-wrap" aria-labelledby="actionHeading"><div class="section-label"><span id="actionHeading">O QUE VOCÊS FAZEM?</span><span id="actionCount"></span></div><div id="actions"></div></section>
+   <section id="endTools" hidden><button id="reviewEnd">Rever as marcas desta noite</button><p>A sessão chegou ao fim. Seu diário e suas escolhas continuam salvos.</p></section>
+   <footer class="scene-footer"><span id="saveStatus">Progresso salvo neste navegador</span><span>As escolhas deixam marcas.</span></footer>
+  </section>
+  <aside class="journal" aria-label="Caderno do grupo"><div class="journal-heading"><span class="tiny">CADERNO DO GRUPO</span><h2>O que ficou.</h2><p id="clueCount">Nenhuma descoberta ainda.</p></div>
+   <nav class="tabs" aria-label="Páginas do caderno"><button data-tab="clues" aria-pressed="true">Pistas</button><button data-tab="names" aria-pressed="false">Nomes</button><button data-tab="party" aria-pressed="false">Grupo</button><button data-tab="investigation" aria-pressed="false">Fios</button></nav>
+   <div id="journalContent" class="journal-content" aria-live="polite"></div>
+   <details class="notes"><summary>Anotações da mesa</summary><label for="notes">Suas hipóteses</label><textarea id="notes" rows="4" maxlength="12000" placeholder="O que ainda não se encaixa?"></textarea></details>
+   <details class="dice"><summary>Dados de apoio</summary><p>Para a interpretação da mesa; não bloqueiam cenas.</p><div id="diceButtons"></div><output id="diceResult" aria-live="polite">—</output></details>
+  </aside>
+ </main>
+ <dialog id="options"><form method="dialog"><button class="close" aria-label="Fechar opções">×</button></form><span class="tiny">A NOITE VERMELHA</span><h2>Guardar a noite</h2><p>O progresso é local a este navegador. Exporte uma cópia para trocar de aparelho ou guardar outra sessão.</p><div class="option-grid"><button id="export">Baixar salvamento</button><label class="file-button">Carregar salvamento<input id="import" type="file" accept=".json,application/json"></label><button id="gmButton">Abrir painel do Mestre</button><a class="button-link" href="mesa/index.html">Mesa visual de apoio</a><button id="reset" class="danger">Começar outra noite</button></div><p id="optionMessage" role="status"></p><p class="muted">O painel do Mestre contém spoilers. A mesa visual anterior é um apoio separado, com seu próprio registro.</p></dialog>
+ <dialog id="confirmDialog"><h2 id="confirmTitle">Confirmar</h2><p id="confirmText"></p><div class="dialog-actions"><button id="cancelConfirm">Cancelar</button><button id="acceptConfirm">Confirmar</button></div></dialog>
+ <noscript><p class="noscript">Ative JavaScript para jogar esta campanha interativa.</p></noscript>
+ <script src="assets/js/story.js"></script><script src="assets/js/state.js"></script><script src="assets/js/game.js"></script>
+</body></html>

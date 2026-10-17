@@ -1,39 +1,4 @@
-<!doctype html>
-<html lang="pt-BR">
-<head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Direção Narrativa — A Noite Vermelha</title>
-  <link rel="stylesheet" href="/assets/css/game.css">
-</head>
-<body class="gm-page">
-  <header class="topbar">
-    <a class="brand" href="/game.html?role=gm"><span class="brand-mark">AV</span><span>A Noite Vermelha</span></a>
-    <div class="top-center">DIREÇÃO NARRATIVA <span class="separator">•</span> invisível aos jogadores</div>
-    <nav class="top-actions"><a class="btn btn-small btn-ghost" href="/game.html?role=gm">Voltar à mesa</a></nav>
-  </header>
-
-  <main class="gm-shell">
-    <section class="gm-header">
-      <div><p class="kicker">PAINEL DO MESTRE</p><h1>Plot points</h1><p class="muted-copy">Fixos sustentam a espinha dorsal. Móveis podem ser ignorados, falhar ou desaparecer para sempre.</p></div>
-      <div class="progress-box"><small>PROGRESSO DO ATO</small><strong id="progressText">0 / 0</strong><div class="progress-track"><span id="progressBar"></span></div></div>
-    </section>
-    <section class="gm-toolbar">
-      <div class="filter-group"><button class="filter active" data-filter="all">Todos</button><button class="filter" data-filter="fixed">Fixos</button><button class="filter" data-filter="mobile">Móveis</button></div>
-      <button class="btn btn-small btn-ghost" id="resetNarrative">Resetar protótipo</button>
-    </section>
-    <div class="gm-layout">
-      <section>
-        <div id="plotBoard" class="plot-board"></div>
-      </section>
-      <aside class="director-side">
-        <p class="panel-label">ESTADO DA HISTÓRIA</p>
-        <div id="storyState" class="story-state"></div>
-        <p class="panel-label">ÚLTIMAS ALTERAÇÕES</p>
-        <div id="narrativeLog" class="narrative-log-static"></div>
-      </aside>
-    </div>
-  </main>
-  <script src="/assets/js/state.js"></script>
-  <script src="/assets/js/gm.js"></script>
-</body>
-</html>
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Mestre — A Noite Vermelha</title><link rel="icon" href="assets/moon.svg"><link rel="stylesheet" href="assets/css/game.css"></head><body>
+<header class="topbar"><a class="brand" href="index.html"><span class="seal">N</span><span>A NOITE<br><b>VERMELHA</b></span></a><span class="chapter">DIREÇÃO NARRATIVA • SPOILERS</span><a class="button-link" href="index.html">Voltar ao jogo</a></header>
+<main class="gm-shell"><section id="gmGate"><span class="eyebrow">SOMENTE PARA QUEM CONDUZ A MESA</span><h1>Por trás da noite.</h1><p>Esta página revela eventos futuros e a identidade de Tião. O aviso evita abertura acidental; não é uma senha ou controle de acesso.</p><button id="revealGM">Mostrar painel do Mestre</button></section><div id="gmContent" hidden></div></main>
+<script src="assets/js/story.js"></script><script src="assets/js/state.js"></script><script src="assets/js/gm.js"></script></body></html>

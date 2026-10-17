@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mesa — A Noite Vermelha</title>
+  <link rel="stylesheet" href="assets/css/game.css">
+</head>
+<body class="game-page">
+  <header class="topbar">
+    <a class="brand" href="../index.html"><span class="brand-mark">AV</span><span>A Noite Vermelha</span></a>
+    <div class="top-center"><span class="live-dot"></span><span>O Pacto da Fazenda</span><span class="separator">•</span><span>ATO I</span></div>
+    <nav class="top-actions">
+      <button class="icon-button" id="btnJournal" title="Diário">☰</button>
+      <a class="btn btn-small btn-ghost gm-only" href="../gm.html">Direção narrativa</a>
+      <button class="avatar" id="roleButton">M</button>
+    </nav>
+  </header>
+
+  <div class="game-shell">
+    <aside class="left-rail">
+      <button class="tool active" data-tool="select" title="Selecionar">↖</button>
+      <button class="tool" data-tool="move" title="Mover">✥</button>
+      <button class="tool" data-tool="fog" title="Névoa">◐</button>
+      <button class="tool gm-only" data-tool="reveal" title="Revelar">◉</button>
+      <span class="rail-spacer"></span>
+      <button class="tool" id="zoomIn">＋</button>
+      <button class="tool" id="zoomOut">−</button>
+    </aside>
+
+    <main class="map-stage" id="mapStage">
+      <div class="map-world" id="mapWorld">
+        <div class="map-vignette"></div>
+        <div class="location-label label-farm">FAZENDA VELHA</div>
+        <div class="location-label label-road">ESTRADA NORTE</div>
+        <div class="location-label label-woods">MATA DO FUNDÃO</div>
+        <div class="road road-a"></div><div class="road road-b"></div>
+        <div class="building farmhouse"><span></span></div>
+        <div class="building barn"><span></span></div>
+        <div class="well"></div>
+        <div class="token player-token" style="left:43%;top:55%" data-name="Octávio"><span>O</span><small>Octávio</small></div>
+        <div class="token player-token" style="left:49%;top:58%" data-name="Baltazar"><span>B</span><small>Baltazar</small></div>
+        <div class="token player-token" style="left:45%;top:64%" data-name="Damião"><span>D</span><small>Damião</small></div>
+        <div class="token player-token" style="left:52%;top:66%" data-name="Turak"><span>T</span><small>Turak</small></div>
+        <div class="token npc-token gm-only" style="left:64%;top:42%" data-name="Tião"><span>?</span><small>Tião</small></div>
+        <button class="hotspot gm-only" style="left:69%;top:35%" data-secret="Um vulto alto observa entre as árvores. Quando alguém olha diretamente, ele já não está lá.">!</button>
+      </div>
+      <div class="scene-caption"><span class="scene-number">01</span><div><strong>Chegada à Fazenda</strong><small>Chuva fina • 23:17 • Visibilidade baixa</small></div></div>
+      <div class="dice-tray">
+        <button data-die="4">d4</button><button data-die="6">d6</button><button data-die="8">d8</button><button data-die="10">d10</button><button data-die="12">d12</button><button class="primary-die" data-die="20">d20</button>
+        <div id="rollResult" class="roll-result">—</div>
+      </div>
+    </main>
+
+    <aside class="right-panel">
+      <div class="panel-tabs"><button class="active" data-tab="party">Grupo</button><button data-tab="clues">Pistas</button><button data-tab="log">Registro</button></div>
+      <section class="panel-content active" data-panel="party">
+        <p class="panel-label">PERSONAGENS</p>
+        <div class="character-list" id="characterList"></div>
+        <div class="presence-card"><span class="live-dot"></span><div><strong>Mesa local</strong><small>Sem conexão multiplayer</small></div></div>
+      </section>
+      <section class="panel-content" data-panel="clues">
+        <p class="panel-label">DESCOBERTAS</p>
+        <div id="clueList" class="clue-list"></div>
+      </section>
+      <section class="panel-content" data-panel="log">
+        <p class="panel-label">REGISTRO DA SESSÃO</p>
+        <div id="sessionLog" class="session-log"></div>
+      </section>
+    </aside>
+  </div>
+
+  <dialog id="secretDialog" class="game-dialog"><button class="dialog-close" data-close>×</button><p class="overline">PERCEPÇÃO</p><h2>Algo chama sua atenção</h2><p id="secretText"></p></dialog>
+  <dialog id="journalDialog" class="game-dialog wide"><button class="dialog-close" data-close>×</button><p class="overline">DIÁRIO DA CAMPANHA</p><h2>A Noite Vermelha</h2><div id="journalContent"></div></dialog>
+
+  <script src="assets/js/state.js"></script>
+  <script src="assets/js/game.js"></script>
+</body>
+</html>
+

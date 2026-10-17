@@ -1,38 +1,50 @@
-(() => {
-  const KEY = 'anv_state_v2';
-  const initial = {
-    role: 'gm',
-    clues: [
-      {id:'red-night', title:'A Noite Vermelha', text:'Os moradores evitam sair depois que a lua assume o tom avermelhado.', visible:true}
-    ],
-    logs: [{time:'23:12', text:'O grupo chegou à Fazenda Velha.'}],
-    story: {act:1, fear:35, pactKnowledge:5, vilarTrust:0, collectorReputation:10},
-    narrativeLog: [],
-    plots: [
-      {id:'arrival', act:1, type:'fixed', title:'Chegada sob a Noite Vermelha', summary:'O grupo entra na região durante a Noite Vermelha e percebe que a cidade teme alguma coisa.', status:'available', canLose:false, reveal:'A região muda depois do pôr do sol.'},
-      {id:'old-man', act:1, type:'mobile', title:'O velho acredita que são Cobradores', summary:'Um pactuante entra em desespero ao ver o grupo. A reação deve parecer exagerada antes de fazer sentido.', status:'available', canLose:true, reveal:'Alguém os confundiu com os Cobradores.'},
-      {id:'tiao-pressure', act:1, type:'mobile', title:'Tião incentiva o conflito', summary:'Tião conduz a situação para violência porque não quer que o grupo compreenda o livro.', status:'locked', depends:['old-man'], canLose:true, reveal:'Tião parece querer impedir uma conversa.'},
-      {id:'book', act:1, type:'fixed', title:'O livro de nomes', summary:'O grupo encontra o livro. Pela via pacífica entende que registra nomes de pactos; pela violenta, inicialmente parece apenas uma lista.', status:'locked', depends:['arrival'], canLose:false, reveal:'O livro contém nomes e datas antigas.'},
-      {id:'octavio-name', act:1, type:'mobile', title:'O nome de Octávio em uma data impossível', summary:'Se examinarem o livro com atenção, encontram Octávio registrado numa data incompatível com sua aparência.', status:'locked', depends:['book'], canLose:true, reveal:'O nome de Octávio aparece numa data que não faz sentido.'},
-      {id:'marked-names', act:2, type:'fixed', title:'Nomes com marcações estranhas', summary:'Alguns registros possuem uma marcação recorrente. Isso aponta para a próxima investigação.', status:'locked', depends:['book'], canLose:false, reveal:'Alguns nomes no livro foram marcados de maneira diferente.'},
-      {id:'dead-people', act:2, type:'fixed', title:'Os marcados deveriam estar mortos', summary:'Ao investigar os nomes marcados, o grupo descobre que essas pessoas constam como mortas.', status:'locked', depends:['marked-names'], canLose:false, reveal:'Os nomes marcados pertencem a pessoas oficialmente mortas.'},
-      {id:'baltazar-thread', act:2, type:'mobile', title:'Vestígio que aponta para Baltazar', summary:'Uma evidência opcional aproxima cedo a verdade: Baltazar carrega partes de pessoas ligadas a pactos.', status:'locked', depends:['dead-people'], canLose:true, reveal:'Há algo em Baltazar que reage aos nomes marcados.'}
-    ]
-  };
-  const clone = x => JSON.parse(JSON.stringify(x));
-  function load(){
-    try { const x = JSON.parse(localStorage.getItem(KEY)); return x && x.plots ? x : clone(initial); }
-    catch { return clone(initial); }
-  }
-  function save(s){ localStorage.setItem(KEY, JSON.stringify(s)); }
-  function reset(){ localStorage.setItem(KEY, JSON.stringify(clone(initial))); return load(); }
-  function unlock(s){
-    for (const p of s.plots) {
-      if (p.status !== 'locked') continue;
-      const deps = p.depends || [];
-      if (deps.length && deps.every(id => s.plots.find(x => x.id===id)?.status === 'completed')) p.status='available';
-    }
-    return s;
-  }
-  window.ANV = { load, save, reset, unlock, initial: clone(initial) };
-})();
+(function(root){
+'use strict';
+const story=root.STORY||(typeof require==='function'?require('./story.js'):null);
+const KEY='anv_campaign_v3';
+const clone=x=>JSON.parse(JSON.stringify(x));
+function fresh(){return {...clone(story.initialVariables),version:3,scene:'start',stage:0,entered:[],used:[],clues:[],logs:[],plots:Object.fromEntries(story.plots.map(p=>[p.id,'pending'])),notes:'',feedback:'',createdAt:new Date().toISOString()};}
+function apply(s,e={}){
+ for(const [key,value] of Object.entries(e.set||{}))s[key]=key.endsWith('_truth_level')?Math.max(s[key]||0,value):value;
+ for(const [key,value] of Object.entries(e.inc||{}))s[key]=(s[key]||0)+value;
+ for(const key of ['A_power','vilar_influence'])s[key]=Math.max(0,Math.min(100,s[key]));
+ s.injuries=Math.max(0,s.injuries);
+ for(const id of e.complete||[])if(s.plots[id]!=='lost')s.plots[id]='completed';
+ for(const id of e.lose||[])lose(s,id);
+ for(const clue of e.clues||[])if(!s.clues.some(c=>c.id===clue.id))s.clues.push(clone(clue));
+ if(e.feedback)s.feedback=e.feedback;
+}
+function lose(s,id){const p=story.plots.find(p=>p.id===id);if(!p||p.type!=='mobile'||s.plots[id]==='completed')return false;if(s.plots[id]!=='lost'){s.plots[id]='lost';s.logs.push({text:'Oportunidade encerrada: '+p.title,private:true});}return true;}
+function enter(s,id){
+ const scene=story.scenes[id];if(!scene)throw new Error('Cena desconhecida.');
+ s.scene=id;s.stage=Math.max(s.stage,scene.act);
+ if(!s.entered.includes(id)){s.entered.push(id);apply(s,scene.enter);}
+ for(const p of story.plots)if(p.expires&&s.stage>=p.expires&&s.plots[p.id]==='pending')lose(s,p.id);
+ if(id.startsWith('end_'))for(const p of story.plots)if(p.type==='mobile'&&s.plots[p.id]==='pending')lose(s,p.id);
+ return s;
+}
+function actions(s){return story.scenes[s.scene].actions.filter(a=>(!a.when||a.when(s))&&(!s.used.includes(s.scene+':'+a.id))&&(!a.to?!(a.effect.complete||[]).some(id=>s.plots[id]==='lost'):true));}
+function choose(s,id){
+ const a=actions(s).find(a=>a.id===id);if(!a)throw new Error('Esta ação não está disponível.');
+ const prev=s.scene;s.feedback='';apply(s,a.effect);
+ s.logs.push({scene:prev,text:a.label,consequence:s.feedback});
+ // Ações locais são consumidas; rotas de investigação podem voltar ao hub.
+ if(!a.to)s.used.push(prev+':'+a.id);
+ if(a.to)enter(s,a.to);
+ return s;
+}
+function validate(raw){
+ if(!raw||raw.version!==3||!story.scenes[raw.scene])throw new Error('Use um salvamento da campanha versão 3.');
+ for(const [k,v] of Object.entries(story.initialVariables))if(typeof raw[k]!==typeof v||(typeof v==='number'&&!Number.isFinite(raw[k])))throw new Error('Salvamento inválido: '+k);
+ if(!Array.isArray(raw.entered)||!raw.entered.every(x=>typeof x==='string'&&story.scenes[x])||!Array.isArray(raw.used)||!raw.used.every(x=>typeof x==='string'))throw new Error('Histórico inválido.');
+ if(!Array.isArray(raw.clues)||!raw.clues.every(x=>x&&['id','title','text'].every(k=>typeof x[k]==='string')))throw new Error('Pistas inválidas.');
+ if(!Array.isArray(raw.logs)||!raw.logs.every(x=>x&&typeof x.text==='string'))throw new Error('Registro inválido.');
+ for(const p of story.plots){if(!['pending','completed','lost'].includes(raw.plots?.[p.id])||(p.type==='fixed'&&raw.plots[p.id]==='lost'))throw new Error('Plot point inválido.');}
+ if(typeof raw.notes!=='string'||typeof raw.feedback!=='string'||!Number.isInteger(raw.stage)||raw.stage<0||raw.stage>6)throw new Error('Estado inválido.');
+ return clone(raw);
+}
+function load(storage){try{const text=storage.getItem(KEY);return {state:text?validate(JSON.parse(text)):fresh(),error:null};}catch(e){return {state:fresh(),error:'Não foi possível ler o progresso salvo. Ele não foi sobrescrito. Exporte esta sessão ou recupere seu arquivo de salvamento.'};}}
+function save(s,storage){try{storage.setItem(KEY,JSON.stringify(s));return true;}catch(e){return false;}}
+root.ANV={KEY,fresh,apply,lose,enter,actions,choose,validate,load,save,clone};
+if(typeof module!=='undefined')module.exports=root.ANV;
+})(typeof window!=='undefined'?window:globalThis);
