@@ -41,7 +41,7 @@ function render(moveFocus=false){
  const scene=STORY.scenes[state.scene];document.body.dataset.act=scene.act;document.title=scene.title+' — A Noite Vermelha';
  $('chapter').textContent=scene.act?`ATO ${scene.act} / 6 · ${['','O ENCONTRO','A DÍVIDA','OS NOMES','AS VIDAS','OS ROSTOS','A ESCOLHA'][scene.act]}`:'UMA HISTÓRIA PARA UMA NOITE';
  const body=typeof scene.body==='function'?scene.body(state):scene.body;
- $('scene').innerHTML=`${state.feedback?`<div class="feedback" role="status"><span class="tiny">A SUA ESCOLHA DEIXOU ISTO</span>${esc(state.feedback)}</div>`:''}<span class="eyebrow">${esc(scene.place)}</span><h1>${esc(scene.title)}</h1>${body.map(p=>`<p>${esc(p)}</p>`).join('')}`;
+ $('scene').innerHTML=`${state.feedback?`<div class="feedback" role="status"><span class="tiny">A SUA ESCOLHA DEIXOU ISTO</span>${esc(state.feedback)}</div>`:''}<span class="eyebrow">${esc(scene.place)}</span><h1>${esc(scene.title)}</h1>${body.map(p=>`<p>${esc(p)}</p>`).join('')}${state.plots.faces==='completed'?'<figure class="revealed-face"><img src="assets/images/vilar-revelado.png" alt="A verdadeira face de Vilar"><figcaption>Vilar — a face por trás das outras.</figcaption></figure>':''}`;
  const actions=ANV.actions(state);$('actions').innerHTML='';
  for(const [i,a] of actions.entries()){
   const b=document.createElement('button');b.dataset.action=a.id;if(state.scene==='start')b.className='primary';

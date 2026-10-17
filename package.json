@@ -1,0 +1,15 @@
+{
+  "name": "a-noite-vermelha",
+  "version": "2.0.0",
+  "private": true,
+  "scripts": {
+    "setup": "npm ci --prefix ferramentas/owlbear/backend --omit=dev --ignore-scripts --no-audit --no-fund",
+    "start": "node server/start.cjs",
+    "test": "node --test tests/story.test.cjs",
+    "build:board": "node server/build-board.cjs",
+    "build:server": "npm --prefix ferramentas/owlbear/backend run build"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

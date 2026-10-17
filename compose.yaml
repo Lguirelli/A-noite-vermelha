@@ -1,0 +1,10 @@
+services:
+  noite-vermelha:
+    build: .
+    ports:
+      - "9000:9000"
+    volumes:
+      - noite-vermelha:/app/data
+    restart: unless-stopped
+volumes:
+  noite-vermelha:

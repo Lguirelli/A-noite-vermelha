@@ -1,0 +1,7 @@
+**/node_modules
+**/.git
+**/build
+!ferramentas/owlbear/backend/build
+!ferramentas/owlbear/backend/build/**
+data
+verificacao
